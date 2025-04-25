@@ -13,7 +13,14 @@ const Navbar = () => {
             <div className='login'>
                 <div className=" flex gap-2 items-center">
                     <img src={userIcon} alt="" />
-                    <NavLink to={"/auth/login"} className="btn btn-neutral">Login</NavLink>
+                    <NavLink
+                        to="/auth/login"
+                        className={({ isActive }) =>
+                            `btn btn-neutral ${isActive ? "bg-black text-white" : ""}`
+                        }
+                    >
+                        Login
+                    </NavLink>
                 </div>
             </div>
         </div>
