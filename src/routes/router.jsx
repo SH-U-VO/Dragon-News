@@ -1,0 +1,53 @@
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import HomeLayout from "../layouts/HomeLayout";
+import CategoryNews from "../Page/CategoryNews";
+import AuthLayout from "../layouts/AuthLayout";
+
+
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <HomeLayout />,
+        children: [
+            {
+                path: "",
+                element: <Navigate to={"/category/1"}></Navigate>
+            },
+            {
+                path: "/category/:id",
+                element: <CategoryNews />,
+                loader: async ({ params }) => {
+                    const res = await fetch("/news.json");
+                    const allNews = await res.json();
+                    const filteredNews = allNews.filter(news => news.category_id === params.id)
+                    return filteredNews;
+                }
+            }
+        ]
+
+    },
+    {
+        path: "/news",
+        element: <h1>News Layout</h1>
+    },
+    {
+        path: "/auth",
+        element: <AuthLayout />,
+        children: [
+            {
+                path: "/auth/login",
+                element: <h2>Login</h2>
+            },
+            {
+                path: "/auth/register",
+                element: <h2>Register</h2>
+            }
+        ]
+    },
+    {
+        path: "*",
+        element: <h1>Error</h1>
+    }
+])
+
+export default router;
