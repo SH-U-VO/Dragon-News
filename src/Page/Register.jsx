@@ -1,35 +1,41 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../components/provider/AuthProvider';
 
 const Register = () => {
-
-    const { createNewUser, user, setUser } = useContext(AuthContext);
+    const navigate = useNavigate();
+    // eslint-disable-next-line no-unused-vars
+    const { createNewUser, user, setUser, updateUserProfile } = useContext(AuthContext);
+    const [error, setError] = useState({});
     const handleSubmit = (e) => {
         e.preventDefault();
         // get form data
         const form = new FormData(e.target);
         const name = form.get("name");
+        if (name.length < 5) {
+            setError({ ...error, name: "must be more than 5 character" })
+            return;
+        }
         const email = form.get("email");
         const photo = form.get("photo");
         const password = form.get("password");
         console.log({ name, photo, email, password })
 
-        createNewUser(email,password)
-        .then((userCredential) => {
-            // Signed up 
-            const user = userCredential.user;
-            console.log("user:", user)
-            setUser(user)
-            // ...
-          })
-          .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // ..
-            console.log("error code:",errorCode)
-            console.log("error message:", errorMessage)
-          });
+        createNewUser(email, password)
+            .then((userCredential) => {
+                // Signed up 
+                const user = userCredential.user;
+                console.log("user:", user)
+                setUser(user)
+                updateUserProfile({ displayName: name, photoURL: photo }).then(() =>{navigate("/");}).catch(err => console.log(err))
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                // ..
+                console.log("error code:", errorCode)
+                console.log("error message:", errorMessage)
+            });
     }
     return (
         <div className='min-h-screen flex justify-center items-center'>
@@ -47,6 +53,14 @@ const Register = () => {
                                 className="input"
                                 placeholder="Enter your name"
                             />
+
+                            {
+                                error.name && (
+                                    <label className="label text-sm text-red-600">
+                                        {error.name}
+                                    </label>
+                                )
+                            }
                             {/* Photo URL Input */}
                             <label className="label">Photo URL</label>
                             <input
@@ -71,6 +85,7 @@ const Register = () => {
                                 className="input"
                                 placeholder="Password"
                             />
+
 
                             <button className="btn btn-neutral mt-4 rounded-none">Register</button>
                         </fieldset>

@@ -4,7 +4,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { AuthContext } from "./provider/AuthProvider";
 
 const Navbar = () => {
-    const { user,logOut } = useContext(AuthContext);
+    const { user, logOut } = useContext(AuthContext);
     console.log(user)
     return (
         <div className='flex justify-between items-center'>
@@ -16,27 +16,37 @@ const Navbar = () => {
             </div>
             <div className='login'>
                 <div className=" flex gap-2 items-center">
-                    <img src={userIcon} alt="" />
+                    {
+                        user && user?.email ?
+                           ( <div className="">
+                               <img src={user?.photoURL} alt="" className="rounded-full w-10 h-10 object-cover" />
+                                <p>{user.displayName}</p>
+                            </div>)
+
+                            :
+                            (<img src={userIcon} alt="" />)
+                    }
+
 
                     {
                         user && user?.email ? <NavLink
-                        onClick={logOut}
-                        to="/auth/login"
-                        className={({ isActive }) =>
-                            `btn btn-neutral ${isActive ? "bg-black text-white" : ""}`
-                        }
-                    >
-                        Log Out
-                    </NavLink>:<NavLink
-                        to="/auth/login"
-                        className={({ isActive }) =>
-                            `btn btn-neutral ${isActive ? "bg-black text-white" : ""}`
-                        }
-                    >
-                        Login
-                    </NavLink>
+                            onClick={logOut}
+                            to="/auth/login"
+                            className={({ isActive }) =>
+                                `btn btn-neutral ${isActive ? "bg-black text-white" : ""}`
+                            }
+                        >
+                            Log Out
+                        </NavLink> : <NavLink
+                            to="/auth/login"
+                            className={({ isActive }) =>
+                                `btn btn-neutral ${isActive ? "bg-black text-white" : ""}`
+                            }
+                        >
+                            Login
+                        </NavLink>
                     }
-                    
+
                 </div>
             </div>
         </div>

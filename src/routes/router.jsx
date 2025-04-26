@@ -5,6 +5,7 @@ import AuthLayout from "../layouts/AuthLayout";
 import Login from "../Page/Login";
 import Register from "../Page/Register";
 import NewsDetails from "../Page/NewsDetails";
+import PrivateRoute from "./PrivateRoute";
 
 
 const router = createBrowserRouter([
@@ -31,7 +32,7 @@ const router = createBrowserRouter([
     },
     {
         path: "/news/:id",
-        element: <NewsDetails />,
+        element: <PrivateRoute><NewsDetails /></PrivateRoute>,
         loader: async ({ params }) => {
             const res = await fetch("/news.json");
             const allNews = await res.json();
