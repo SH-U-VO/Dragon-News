@@ -4,6 +4,7 @@ import CategoryNews from "../Page/CategoryNews";
 import AuthLayout from "../layouts/AuthLayout";
 import Login from "../Page/Login";
 import Register from "../Page/Register";
+import NewsDetails from "../Page/NewsDetails";
 
 
 const router = createBrowserRouter([
@@ -29,8 +30,14 @@ const router = createBrowserRouter([
 
     },
     {
-        path: "/news",
-        element: <h1>News Layout</h1>
+        path: "/news/:id",
+        element: <NewsDetails />,
+        loader: async ({ params }) => {
+            const res = await fetch("/news.json");
+            const allNews = await res.json();
+            const requiredNews = allNews.find(news => news._id === params.id)
+            return requiredNews;
+        }
     },
     {
         path: "/auth",
